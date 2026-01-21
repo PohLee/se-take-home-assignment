@@ -23,7 +23,7 @@ As below is part of the user story:
 4. When "+ Bot" clicked, a bot should be created and start processing the order inside "PENDING" area. after 10 seconds picking up the order, the order should move to "COMPLETE" area. Then the bot should start processing another order if there is any left in "PENDING" area.
 5. If there is no more order in the "PENDING" area, the bot should become IDLE until a new order come in.
 6. When "- Bot" clicked, the newest bot should be destroyed. If the bot is processing an order, it should also stop the process. The order now back to "PENDING" and ready to process by other bot.
-7. No data persistance is needed for this prototype, you may perform all the process inside memory.
+7. No data persistence is needed for this prototype, you may perform all the process inside memory.
 
 ### Functioning Prototype
 You must implement **either** frontend or backend components as described below:
