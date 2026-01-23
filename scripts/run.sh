@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Run Script
-# This script should execute your CLI application and output results to result.txt
+# This script executes the CLI application and outputs results to result.txt
 
 echo "Running CLI application..."
 
-# For Go projects:
-# ./order-controller > result.txt
+# Execute the binary and redirect output to result.txt
+# ./order-controller > scripts/result.txt 2>&1
 
-# For Node.js projects:
-# node index.js > result.txt
-# or npm start > result.txt
+go run ./cmd/main.go
 
-# Temporary placeholder - remove this when you implement your CLI
-echo "Added 1 bot" > result.txt
-echo "status: bot: [1], order: []" >> result.txt
-
-echo "CLI application execution completed"
+if [ $? -eq 0 ]; then
+    echo "CLI application execution completed"
+    echo "Output saved to scripts/result.txt"
+else
+    echo "CLI application execution failed"
+    exit 1
+fi

@@ -52,101 +52,104 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧠 Skills (40)
+## 🧠 Skills (220+)
 
 Domain-specific knowledge modules. Skills are loaded on-demand based on task context.
 
-### Frontend & UI
+### 🤖 AI & Agents
 | Skill | Description |
 |-------|-------------|
-| `react-patterns` | React hooks, state, performance |
-| `nextjs-best-practices` | App Router, Server Components |
-| `tailwind-patterns` | Tailwind CSS v4 utilities |
-| `frontend-design` | UI/UX patterns, design systems |
-| `ui-ux-pro-max` | 50 styles, 21 palettes, 50 fonts |
+| `agent-evaluation` | Testing and benchmarking LLM agents |
+| `agent-manager-skill` | Local CLI agent management via tmux |
+| `agent-memory-systems` | Implementation of short/long-term agent memory |
+| `agent-tool-builder` | Design of robust tools for AI agents |
+| `ai-agents-architect` | designing and building autonomous AI agents |
+| `ai-product` | Integration patterns for AI into products |
+| `autonomous-agents` | Architecture for independent goal-seeking agents |
+| `crewai` | Role-based multi-agent framework expert |
+| `langgraph` | Stateful, multi-actor agent applications |
+| `loki-mode` | Multi-agent autonomous startup system |
+| `prompt-engineer` | Expert prompt design and optimization |
+| `rag-engineer` | Retrieval-Augmented Generation systems expert |
+| `voice-agents` | Real-time voice interaction systems |
 
-### Backend & API
+### 🛡️ Security & Pentesting
 | Skill | Description |
 |-------|-------------|
-| `api-patterns` | REST, GraphQL, tRPC |
-| `nestjs-expert` | NestJS modules, DI, decorators |
-| `nodejs-best-practices` | Node.js async, modules |
-| `python-patterns` | Python standards, FastAPI |
+| `active-directory-attacks` | AD exploitation and security assessment |
+| `api-fuzzing-bug-bounty` | API security testing and fuzzing |
+| `aws-penetration-testing` | AWS cloud security assessment |
+| `burp-suite-testing` | Web app testing with Burp Suite |
+| `ethical-hacking-methodology` | Standard pentest lifecycle and recon |
+| `linux-privilege-escalation` | Linux privesc techniques |
+| `metasploit-framework` | Exploitation using Metasploit |
+| `red-team-tactics` | MITRE ATT&CK based adversary simulation |
+| `vulnerability-scanner` | Automated vulnerability analysis |
+| `web-application-testing` | OWASP top 10 and web testing |
+| `windows-privilege-escalation` | Windows privesc techniques |
+| `wireshark-analysis` | Network traffic packet analysis |
 
-### Database
+### 🎨 Frontend & Design
 | Skill | Description |
 |-------|-------------|
-| `database-design` | Schema design, optimization |
-| `prisma-expert` | Prisma ORM, migrations |
+| `3d-web-experience` | Three.js, R3F, WebGL experiences |
+| `canvas-design` | Programmatic image generation |
+| `frontend-design` | Production-grade UI/UX patterns |
+| `frontend-dev-guidelines` | React/TS frontend architecture guide |
+| `mobile-design` | Mobile-first UI/UX decision making |
+| `react-patterns` | Modern React hooks and performance |
+| `tailwind-patterns` | Tailwind CSS v4 best practices |
+| `ui-ux-pro-max` | Comprehensive design systems & palettes |
+| `web-artifacts-builder` | Complex HTML/React artifact generation |
 
-### TypeScript/JavaScript
+### ☁️ Backend & Cloud
 | Skill | Description |
 |-------|-------------|
-| `typescript-expert` | Type-level programming, performance |
+| `api-patterns` | REST, GraphQL, tRPC design |
+| `aws-serverless` | AWS Lambda & Serverless architecture |
+| `backend-dev-guidelines` | Node/Express/TS microservices guide |
+| `database-design` | Schema optimization and normalization |
+| `docker-expert` | Containerization and orchestration |
+| `firebase` | Full backend-as-a-service implementation |
+| `nestjs-expert` | NestJS module architecture |
+| `prisma-expert` | Prisma ORM and migrations |
+| `server-management` | Infrastructure and process management |
+| `supabase-auth` | Authentication with Supabase |
 
-### Cloud & Infrastructure
+### 📈 Marketing & Growth
 | Skill | Description |
 |-------|-------------|
-| `docker-expert` | Containerization, Compose |
-| `deployment-procedures` | CI/CD, deploy workflows |
-| `server-management` | Infrastructure management |
+| `app-store-optimization` | ASO for iOS and Android |
+| `copywriting` | Sales and marketing copy creation |
+| `email-systems` | Transactional and marketing email infra |
+| `launch-strategy` | Product hunt and GTM strategies |
+| `marketing-ideas` | Growth tactics and channel strategy |
+| `programmatic-seo` | Scalable SEO page generation |
+| `seo-fundamentals` | Technical SEO and Core Web Vitals |
+| `viral-generator-builder` | Viral tool and quiz creation |
 
-### Testing & Quality
+### 📦 Product & Project
 | Skill | Description |
 |-------|-------------|
-| `testing-patterns` | Jest, Vitest, strategies |
-| `webapp-testing` | E2E, Playwright |
-| `tdd-workflow` | Test-driven development |
-| `code-review-checklist` | Code review standards |
-| `lint-and-validate` | Linting, validation |
+| `architecture` | System design trade-off analysis |
+| `brainstorming` | Socratic requirement discovery |
+| `documentation-templates` | standard READMEs and docs |
+| `plan-writing` | Structured implementation planning |
+| `product-manager-toolkit` | PRDs, RICE, user research |
+| `project-planner` | Task breakdown and estimation |
 
-### Security
+### 🛠️ Dev Tools & Languages
 | Skill | Description |
 |-------|-------------|
-| `vulnerability-scanner` | Security auditing, OWASP |
-| `red-team-tactics` | Offensive security |
-
-### Architecture & Planning
-| Skill | Description |
-|-------|-------------|
-| `app-builder` | Full-stack app scaffolding |
-| `architecture` | System design patterns |
-| `plan-writing` | Task planning, breakdown |
-| `brainstorming` | Socratic questioning |
-
-### Mobile
-| Skill | Description |
-|-------|-------------|
-| `mobile-design` | Mobile UI/UX patterns |
-
-### Game Development
-| Skill | Description |
-|-------|-------------|
-| `game-development` | Game logic, mechanics |
-
-### SEO & Growth
-| Skill | Description |
-|-------|-------------|
-| `seo-fundamentals` | SEO, E-E-A-T, Core Web Vitals |
-| `geo-fundamentals` | GenAI optimization |
-
-### Shell/CLI
-| Skill | Description |
-|-------|-------------|
-| `bash-linux` | Linux commands, scripting |
-| `powershell-windows` | Windows PowerShell |
-
-### Other
-| Skill | Description |
-|-------|-------------|
-| `clean-code` | Coding standards (Global) |
-| `behavioral-modes` | Agent personas |
-| `parallel-agents` | Multi-agent patterns |
-| `mcp-builder` | Model Context Protocol |
-| `documentation-templates` | Doc formats |
-| `i18n-localization` | Internationalization |
-| `performance-profiling` | Web Vitals, optimization |
-| `systematic-debugging` | Troubleshooting |
+| `bash-linux` | Terminal mastery and scripting |
+| `browser-automation` | Playwright/Puppeteer scraping |
+| `clean-code` | Universal coding standards |
+| `git-pushing` | Conventional commits and git workflow |
+| `python-patterns` | Pythonic code and framework selection |
+| `systematic-debugging` | Root cause analysis methodology |
+| `tdd-workflow` | Red-Green-Refactor cycle |
+| `typescript-expert` | Advanced TS types and config |
+| `webapp-testing` | E2E testing with Playwright |
 
 ---
 
@@ -205,7 +208,7 @@ skill-name/
 | Metric | Value |
 |--------|-------|
 | **Total Agents** | 16 |
-| **Total Skills** | 40 |
+| **Total Skills** | 220+ |
 | **Total Workflows** | 11 |
 | **Coverage** | ~90% web/mobile development |
 

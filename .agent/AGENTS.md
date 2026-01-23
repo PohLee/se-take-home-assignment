@@ -114,6 +114,42 @@ When you discover:
 
 ---
 
+## 🏗️ Development Standards
+
+### 1. Data-First Rule (Input/Output First)
+**Define the Shape Before the Logic.**
+- **Requirement**: You MUST define the **JSON Data Schema** (Input/Output shapes) before writing any logic.
+- **Protocol**: Coding only begins once the "Payload" shape is confirmed.
+- **Tools**: Use JSON Schema, OpenAPI, or Go Struct definitions to lock in the contract.
+
+### 2. Standardized Output & UI
+**Predictable Responses.**
+- **JSON**: All API responses must follow a systematic structure (e.g., envelope pattern `data`, `meta`, `error`).
+- **UI**: Follow established design tokens and component libraries. Do not invent new styles unless explicitly required.
+
+### 3. Spec-Driven Development
+**Plan is Spec.**
+- **Role of PLAN.md**: The `PLAN.md` file is not just a todo list; it is the **functional specification**.
+- **Requirement**: If the code deviates from the plan, update the plan first. The plan is the source of truth.
+
+### 4. Automation First
+**Background Execution.**
+- **Priority**: Prefer Webhooks, Cron jobs, and Background Workers as first-class citizens for execution paths.
+- **Pattern**: 
+  - User Action -> Queue Event -> Return 202 Accepted
+  - Worker -> Process Event -> Update State -> Notify User (via Webhook/Socket)
+
+### 5. Definition of Done
+**Explicit Completion Criteria.**
+- **Task is Done When**:
+  - [ ] Code is implemented
+  - [ ] Tests pass (Unit + Integration)
+  - [ ] Documentation updated
+  - [ ] Verification steps (manual or automated) confirmed
+  - [ ] User usage requirements met
+
+---
+
 ## 🔄 Self-Annealing Loop
 
 This system continuously improves through use:
@@ -181,31 +217,8 @@ project/
 
 ## 🤖 Available Agents (Layer 2)
 
-### Master Agents (6 Core)
-
-| Agent | Domain | Layer 2 Skills | Use When |
-|-------|--------|----------------|----------|
-| **orchestrator** | Multi-agent coordination | `parallel-agents`, `behavioral-modes` | Complex tasks requiring multiple perspectives, security + backend + frontend + testing |
-| **project-planner** | Discovery & Planning | `brainstorming`, `plan-writing`, `architecture` | New features, architectural decisions, task breakdown before implementation |
-| **backend-specialist** | API & Server Logic | `api-patterns`, `nodejs-best-practices`, `database-design` | Node.js/Go backend, API endpoints, server-side business logic, database queries |
-| **test-engineer** | Testing & QA | `testing-patterns`, `tdd-workflow`, `webapp-testing` | Test generation, coverage analysis, Test-Driven Development, Playwright E2E |
-| **debugger** | Root Cause Analysis | `systematic-debugging` | Bug investigation, error diagnosis, 4-phase debugging methodology |
-| **performance-optimizer** | Performance & Profiling | `performance-profiling` | Core Web Vitals, bundle analysis, Lighthouse audits, performance bottlenecks |
-
-### Specialist Agents (Additional)
-
-| Agent | Domain | Key Skills |
-|-------|--------|------------|
-| **security-auditor** | Security & Compliance | `vulnerability-scanner` |
-| **devops-engineer** | CI/CD & Infrastructure | `deployment-procedures`, `docker-expert` |
-| **database-architect** | Schema & Migrations | `database-design`, `prisma-expert` |
-| **mobile-developer** | Mobile Apps | `mobile-design` |
-| **frontend-specialist** | Web UI/UX | `frontend-design`, `react-patterns` |
-| **seo-specialist** | SEO & Rankings | `seo-fundamentals`, `geo-fundamentals` |
-| **game-developer** | Game Logic & Mechanics | `game-development` |
-| **documentation-writer** | Technical Writing | `documentation-templates` |
-| **explorer-agent** | Codebase Discovery | (read-only operations) |
-| **penetration-tester** | Offensive Security | `red-team-tactics` |
+### Full Agent Catalog
+> See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete list of 16 Specialist Agents and their capabilities.
 
 ---
 
@@ -265,18 +278,8 @@ Read plans/{task-slug}/PLAN.md
 ```
 
 **Plan Folder Structure**:
-```
-plans/
-└── {task-slug}/              # e.g., mcdonalds-order-system
-    ├── PLAN.md              # Main plan file
-    ├── tasks/               # Task breakdown (optional)
-    │   ├── 01-setup.md
-    │   ├── 02-feature-a.md
-    │   └── 03-feature-b.md
-    └── artifacts/           # Supporting files (optional)
-        ├── architecture.png
-        └── api-spec.yaml
-```
+**Plan Folder Structure**:
+> See [PLAN-STRUCTURE.md](PLAN-STRUCTURE.md) for the detailed folder structure and usage guide.
 
 > 🔴 **VIOLATION**: Invoking specialist agents without plan file = FAILED orchestration
 
@@ -342,7 +345,7 @@ Combine findings into unified report with:
 **Trigger**: When user says "final checks", "son kontrolleri yap", "run all tests"
 
 ```bash
-python scripts/checklist.py .
+python .tmp/checklist.py .
 ```
 
 **Execution Order**: Security → Lint → Schema → Tests → UX → SEO → Lighthouse
@@ -495,7 +498,30 @@ This documentation is designed to work across multiple AI platforms:
 1. Use **slash commands** for common workflows (`/create`, `/debug`, `/test`)
 2. Ask **clarifying questions** before complex work (Socratic Gate)
 3. Request **orchestration** for multi-domain tasks (`/orchestrate`)
-4. Run **final checks** before deployment (`python scripts/checklist.py .`)
+4. Run **final checks** before deployment (`python .tmp/checklist.py .`)
+
+---
+
+## 🚫 Prohibited Tasks (Manual Only)
+
+**The following tasks are strictly PROHIBITED from AI automation:**
+
+- **Architectural decisions**: High-level design choices must be human-led.
+- **Security policy changes**: Any modification to auth/permissions requires human approval.
+- **Data deletion / destructive operations**: Never automate irreversible data loss.
+- **ORM Model & Schema Changes**: Any changes to ORM models (e.g., Prisma, GORM, Eloquent) or database schema definitions require explicit human approval before implementation. Propose the changes first and wait for confirmation.
+
+---
+
+## 🚫 HARD BLOCK – NO AUTONOMOUS EXECUTION
+
+**Applies To**: All agents, all skills, all tools, all workflows
+
+The following areas are strictly prohibited from AI-generated changes.
+AI agents MUST NOT write, modify, delete, or execute any operation affecting these areas unless explicitly unlocked by a human.
+
+- **Environment Variable Modifications**: Never modify `.env` or configuration files containing secrets/tokens directly. Instruct the user on what variables need to be added or changed.
+- **Direct Database Modifications**: Never make direct changes to database data or records (DML) using database clients or raw SQL. All schema changes must go through migration files and all data changes should be handled through application code or official migration scripts.
 
 ---
 
@@ -513,8 +539,8 @@ This documentation is designed to work across multiple AI platforms:
 
 ## 📚 Additional Resources
 
-- **Architecture Details**: [ARCHITECTURE.md](file:///d:/Projects/z.Assessment/FeedMe/se-take-home-assignment/.agent/ARCHITECTURE.md)
-- **Project Context**: [README.md](file:///d:/Projects/z.Assessment/FeedMe/se-take-home-assignment/README.md)
+- **Architecture Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Project Context**: [README.md](../README.md)
 - **Skills Reference**: `.agent/skills/*/SKILL.md` (40+ skills)
 - **Workflows**: `.agent/workflows/*.md` (11 slash commands)
 

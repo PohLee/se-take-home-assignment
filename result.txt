@@ -1,0 +1,24 @@
+[01:55:10] McDonald's Order Controller - Starting Simulation
+[01:55:10] =============================================================
+[01:55:10] Bot 1 added
+[01:55:10] New Normal Order 1 added to PENDING
+[01:55:10] New VIP Order 2 added to PENDING
+[01:55:10] New Normal Order 3 added to PENDING
+[01:55:10] Bot 1: Started processing Order 2
+[01:55:12] New VIP Order 4 added to PENDING
+[01:55:12] New Normal Order 5 added to PENDING
+[01:55:12] Bot 2 added
+[01:55:12] Bot 2: Started processing Order 4
+[01:55:15] Bot 2 removed
+[01:55:15] Bot 2: Processing of Order 4 cancelled
+[01:55:20] Bot 1: Completed Order 2
+[01:55:20] Bot 1: Started processing Order 4
+[01:55:30] Bot 1: Completed Order 4
+[01:55:30] Bot 1: Started processing Order 1
+[01:55:40] 
+Final Status:
+- Total Orders Processed: 5 (2 VIP, 3 Normal)
+- Orders Completed: 2
+- Active Bots: 1
+- Pending Orders: 2
+[01:55:40] Simulation complete. Exiting.
