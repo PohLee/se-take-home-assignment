@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/feedme/order-controller/internal/event"
 	"github.com/feedme/order-controller/internal/utils"
 )
 
@@ -11,9 +12,13 @@ var (
 	allOrders   []*Order
 	lastOrderID = 1000
 	idMu        sync.Mutex
+	// Bus is the global event bus used to publish order lifecycle events.
+	// It must be initialized by the SystemManager.
+	Bus *event.EventBus
 )
 
-// AddOrder creates a new order with a unique ID and correct priority, then adds it to the queue.
+// AddOrder creates a new order with a unique ID and correct priority, adds it to the queue,
+// and publishes an OrderCreated event to the global Bus.
 func AddOrder(q *Queue, orderType OrderTypeEnum) *Order {
 	idMu.Lock()
 	defer idMu.Unlock()
@@ -33,6 +38,14 @@ func AddOrder(q *Queue, orderType OrderTypeEnum) *Order {
 
 	utils.Log("Order •%d (Priority: %d - %s) Created - Status: PENDING", newOrder.ID, newOrder.Priority, newOrder.Type)
 	q.Push(newOrder)
+
+	if Bus != nil {
+		Bus.Publish(event.Event{
+			Type: event.OrderCreated,
+			Data: newOrder,
+		})
+	}
+
 	return newOrder
 }
 

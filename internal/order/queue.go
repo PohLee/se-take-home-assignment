@@ -16,7 +16,11 @@ func (pq PriorityQueue) Less(i, j int) bool {
 		return pq[i].Priority > pq[j].Priority
 	}
 	// For same priority, earlier CreatedAt comes first
-	return pq[i].CreatedAt.Before(pq[j].CreatedAt)
+	if !pq[i].CreatedAt.Equal(pq[j].CreatedAt) {
+		return pq[i].CreatedAt.Before(pq[j].CreatedAt)
+	}
+	// Tie breaker: use ID to ensure strict FIFO if timestamps are identical
+	return pq[i].ID < pq[j].ID
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
@@ -37,25 +41,54 @@ func (pq *PriorityQueue) Pop() interface{} {
 }
 
 // Queue manages the order priority queue with thread safety.
+// NOTE: This is an in-memory implementation for demonstration and prototype purposes.
+// In a production environment, this should be replaced by a robust task queue system
+// such as Asynq or Machinery, backed by a persistent broker like Redis or RabbitMQ
+// to ensure task persistence, scalability, and better reliability.
 type Queue struct {
 	pq PriorityQueue
 	mu sync.Mutex
+	// Notify is used as an internal signaling mechanism to wake up bot workers
+	// immediately when an order is available, minimizing idle polling.
+	Notify chan struct{}
+	paused bool //  allows a manager to "freeze" bots from picking up orders
 }
 
 // NewQueue initializes and returns a new empty order priority Queue.
 func NewQueue() *Queue {
 	q := &Queue{
-		pq: make(PriorityQueue, 0),
+		pq:     make(PriorityQueue, 0),
+		Notify: make(chan struct{}, 100), // Buffered to prevent blocking producers
 	}
 	heap.Init(&q.pq)
 	return q
 }
 
+func (q *Queue) SetPaused(paused bool) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	q.paused = paused
+	// If we just unpaused, signal bots to check the queue again
+	if !paused {
+		select {
+		case q.Notify <- struct{}{}:
+		default:
+		}
+	}
+}
+
 // Push adds a new order to the priority queue.
 func (q *Queue) Push(order *Order) {
 	q.mu.Lock()
-	defer q.mu.Unlock()
 	heap.Push(&q.pq, order)
+	q.mu.Unlock()
+
+	// Signal that a new order is available
+	select {
+	case q.Notify <- struct{}{}:
+	default:
+		// Channel full, signal already pending
+	}
 }
 
 // Pop removes and returns the highest-priority order from the queue.
@@ -63,23 +96,23 @@ func (q *Queue) Push(order *Order) {
 func (q *Queue) Pop() *Order {
 	q.mu.Lock()
 	defer q.mu.Unlock()
-	if q.pq.Len() == 0 {
+	if q.paused || q.pq.Len() == 0 {
 		return nil
 	}
 	return heap.Pop(&q.pq).(*Order)
 }
 
 // PushFront adds an order back to the queue (e.g., after a bot cancellation).
-// In this implementation, it's equivalent to Push since the priority/time logic
-// will naturally put it back in the correct position.
 func (q *Queue) PushFront(order *Order) {
 	q.mu.Lock()
-	defer q.mu.Unlock()
-	// To push to front in a priority queue, we could just push it normally
-	// and if priorities are the same, it will be sorted by time.
-	// However, if we want it to be ABSOLUTELY first, we'd need to manipulate time.
-	// But according to requirements, it just goes back to PENDING.
 	heap.Push(&q.pq, order)
+	q.mu.Unlock()
+
+	// Signal that a new order is available
+	select {
+	case q.Notify <- struct{}{}:
+	default:
+	}
 }
 
 // Peek returns the highest-priority order without removing it from the queue.

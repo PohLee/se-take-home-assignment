@@ -20,13 +20,13 @@ func NewPool() *Pool {
 	}
 }
 
-// AddBot creates a new bot with a random 6-character ID, sets it to Idle,
-// adds it to the pool, and returns the newly created Bot.
+// AddBot creates a new bot with a random 6-character ID, initializes its status
+// to Idle, and returns the newly created Bot.
 func (p *Pool) AddBot() *Bot {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	newID := utils.GenerateRandomID(6)
+	newID := utils.GenerateRandomID(3)
 	newBot := &Bot{
 		ID:     newID,
 		Status: BotStatusIdle,

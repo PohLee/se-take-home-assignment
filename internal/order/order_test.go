@@ -73,3 +73,42 @@ func TestOrderStats(t *testing.T) {
 		t.Errorf("Expected completed count at least 1, got %d", GetCompletedCount())
 	}
 }
+
+func TestIdenticalTimestampTieBreaker(t *testing.T) {
+	q := NewQueue()
+	now := time.Now()
+
+	// Three orders created with exact same timestamp
+	o1 := &Order{ID: 1001, Type: OrderTypeNormal, Priority: OrderPriorityNormal, CreatedAt: now}
+	o2 := &Order{ID: 1002, Type: OrderTypeNormal, Priority: OrderPriorityNormal, CreatedAt: now}
+	o3 := &Order{ID: 1003, Type: OrderTypeNormal, Priority: OrderPriorityNormal, CreatedAt: now}
+
+	// Push in mixed order
+	q.Push(o3)
+	q.Push(o1)
+	q.Push(o2)
+
+	// Should come out in ID order: 1001, 1002, 1003
+	results := []int{1001, 1002, 1003}
+	for _, expectedID := range results {
+		got := q.Pop()
+		if got.ID != expectedID {
+			t.Errorf("Expected ID %d, got %d", expectedID, got.ID)
+		}
+	}
+}
+
+func TestQueuePause(t *testing.T) {
+	q := NewQueue()
+	q.Push(&Order{ID: 1, Type: OrderTypeNormal, Priority: OrderPriorityNormal, CreatedAt: time.Now()})
+
+	q.SetPaused(true)
+	if q.Pop() != nil {
+		t.Error("Pop should return nil when queue is paused")
+	}
+
+	q.SetPaused(false)
+	if q.Pop() == nil {
+		t.Error("Pop should return order when queue is unpaused")
+	}
+}

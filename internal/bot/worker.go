@@ -8,8 +8,10 @@ import (
 	"github.com/feedme/order-controller/internal/utils"
 )
 
-// ProcessOrder handles the 10-second processing of a single order.
-// It returns true if the order was completed, and false if it was cancelled.
+// ProcessOrder handles the simulation of order processing (10 seconds per order).
+// It transitions the bot and order states through PROCESSING and COMPLETE/OFFLINE.
+// It returns true if the order was completed, and false if it was cancelled
+// by a context signal (e.g., bot shutdown).
 func (b *Bot) ProcessOrder(ctx context.Context, ord *order.Order, onComplete func(*order.Order)) bool {
 	b.Status = BotStatusProcessing
 	b.CurrentOrderID = &ord.ID
