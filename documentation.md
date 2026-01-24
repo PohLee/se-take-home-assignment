@@ -2,44 +2,56 @@
 
 This document provides a technical overview of the McDonald's Order Controller backend, explaining the architecture, implementation methodology, and operational flows.
 
+---
+
 ## 1. Features Overview
 
-- **Priority-Based Processing**: High-priority (VIP) orders automatically take precedence in the pending queue using a thread-safe heap implementation.
-- **Dynamic Bot Management**: Bots (workers) can be added or removed on the fly. Removing a bot safely returns its currently processing order to the front of the queue.
-- **Randomized Bot IDs**: Each bot is uniquely identified by a 6-character alphanumeric string (e.g., `OyGPzP`).
-- **Domain-Driven Statistics**: System status metrics (Total, Completed, Pending, Active Bots) are sourced directly from the respective `order` and `bot` domain packages.
-- **Traceable Logging**: Two-tier logging system providing timestamped event logs (`utils.Log`) and raw status reports (`utils.LogRaw`).
-- **Comprehensive Testing**: Unit tests covering core domain logic and integration tests for the `SystemManager`.
-- **CI/CD Integration**: Fully compatible with GitHub Actions (`go-verify-result` workflow) for automated verification.
+- **Priority-Based Orchestration**: High-priority (VIP) orders automatically take precedence using a thread-safe heap implementation.
+- **Strict FIFO Logic**: Uses a three-tier comparison for order retrieval:
+    1. **Priority Tier** (VIP vs. Normal)
+    2. **Submission Time** (CreatedAt timestamp)
+    3. **Order ID** (Strict tie-breaker for simultaneous arrivals)
+- **Signaling Worker Pattern**: Bots use a signaling mechanism (`Notify` channel) to wake up immediately when work is available, eliminating inefficient polling.
+- **Batch Processing Support**: Includes a `Paused` state to freeze assignment while large batches of orders are being submitted, ensuring the full priority list is respected.
+- **Dynamic Bot Pool**: Bots can be added or removed at runtime. Removing a bot safely returns its in-progress order to the front of the queue.
+- **Traceable Logging**: Millisecond-precision timestamps (`15:04:05.000`) for debugging concurrent race conditions.
 
 ---
 
 ## 2. Implementation Methodology
 
 ### Architecture
-The project follows a **Modular Monolith** structure, separating concerns into distinct packages:
+The project follows a modular structure to separate concerns:
 - `cmd/main.go`: Entry point and simulation orchestration.
-- `internal/manager`: Coordination layer (`SystemManager`) that bridges orders and bots.
-- `internal/order`: Domain logic for order models, priority queue management, and statistics.
-- `internal/bot`: Domain logic for bot workers, pool management, and concurrent processing.
+- `internal/manager`: Coordination layer (`SystemManager`) bridging orders and bots.
+- `internal/order`: Domain logic for models, priority queue, and statistics.
+- `internal/bot`: Domain logic for bot workers and lifecycle management.
+- `internal/event`: Simple Pub/Sub EventBus for system decoupling.
 - `internal/utils`: Low-level utilities for logging, timestamping, and ID generation.
 
 ### Concurrency Model
-The system uses Go's concurrency primitives to manage bot workers:
-1. **Goroutines**: Each bot runs in its own goroutine (`botLoop`).
-2. **Contexts**: `context.Context` is used to signal bot shutdown. When a bot is removed, its context is cancelled, triggering a graceful exit from its processing loop.
-3. **Mutexes**: Thread-safety is ensured across the `Queue`, `Pool`, and `SystemManager` using `sync.Mutex` to prevent race conditions during order popping and bot registration.
+The system uses Go's internal primitives to manage high-concurrency:
+1. **Goroutines**: Each bot runs in its own lightweight thread.
+2. **Contexts**: Used for clean shutdown and cancellation of processing tasks.
+3. **Mutexes**: Ensures memory integrity when multiple bots access the queue or shared statistics.
 
-### Priority Queue
-Orders are managed using a **Min-Heap** (implemented via `container/heap`). The priority is determined by:
-1. **Order Type**: VIP (Priority 20) vs Normal (Priority 10). Higher numerical priority comes first.
-2. **First-In-First-Out (FIFO)**: For orders with the same priority, the `CreatedAt` timestamp is used as the tie-breaker.
+---
+
+## 3. Production Readiness Note
+
+The current implementation is a **custom in-memory task queue** designed as a high-performance prototype for CLI simulations. 
+
+For a production-grade environment, it is recommended to replace the internal `order.Queue` with a robust distributed task queue library:
+- **Asynq** (based on Redis)
+- **Machinery** (supporting RabbitMQ or Redis)
+
+These libraries provide essential features like persistent storage, cross-server scaling, automatic retries, and dead-letter queues that are necessary for real-world mission-critical systems.
 
 ---
 
 ## 3. Process Flow
 
-The following diagram illustrates the lifecycle of an order from submission to completion:
+The following diagram illustrates the lifecycle of an order and how bots react to system signals rather than polling:
 
 ```mermaid
 sequenceDiagram
@@ -49,38 +61,53 @@ sequenceDiagram
     participant B as Bot (Worker)
 
     User->>SM: AddOrder(VIP/Normal)
+    SM->>Q: SetPaused(true)
     SM->>Q: Push(Order)
-    Note over Q: Sorted by Priority then Time
+    SM->>Q: SetPaused(false)
+    Q-->>B: Signal (Notify Channel)
     
-    loop Every 500ms (Idle Bot)
-        B->>Q: Pop()
-        Q-->>B: Order Found
-    end
-
-    Note over B: Status: PROCESSING
-    B->>B: Sleep 10s (Cooking)
+    B->>Q: Pop()
+    Q-->>B: Highest Priority Order
+    
+    Note over B: Status: PROCESSING (10s)
     
     alt Completion
-        B-->>SM: Complete Order
-        SM->>B: Mark IDLE
-        Note over B: Status: COMPLETE
-    else Bot Removal (manager.RemoveBot)
+        B-->>SM: Order Completed
+        Note over B: Status: IDLE
+    else Bot Removal
         SM->>B: Cancel Context
         B->>Q: PushFront(Order)
-        Note over Q: Order re-queued as PENDING
-        Note over B: Bot Offline
+        Note over Q: Re-queued at front
     end
 ```
 
 ---
 
-## 4. Verification
+## 4. Component Breakdown
+
+### Priority Queue (`internal/order/queue.go`)
+Implements `heap.Interface`. The comparison logic ensures that VIP orders are always at the top. If two orders arrive at the exact same millisecond, the one with the lower ID is processed first.
+
+### Bot Worker (`internal/bot/worker.go`)
+Simulates a 10-second cooking cycle. It is designed to be cancellable; if the bot is removed during those 10 seconds, it gracefully stops the timer and pushes the order back to the pending queue.
+
+### Event Bus (`internal/event/eventbus.go`)
+A non-blocking event broadcaster. Channels have a buffer of 10 slots; if a consumer is too slow, the bus skips the event for that consumer to prevent stalling the entire simulation.
+
+---
+
+## 5. Verification
 
 ### Automated Verification
-Run the following script from the root directory to perform a full build, test, and simulation sequence:
+Run the following command to execute the full suite of unit tests, including stability tests for identical timestamps and concurrency:
 ```bash
-./scripts/test.sh && ./scripts/build.sh && ./scripts/run.sh
+go test -v ./...
 ```
 
-### Manual Audit
-The execution results are saved to `scripts/result.txt`. Every log entry follows the required `[HH:MM:SS]` timestamp format to allow precise tracking of order processing times.
+### Simulation
+Build and run the simulation using the provided scripts:
+```bash
+./scripts/build.sh && ./scripts/run.sh
+```
+The results, including millisecond-precise logs, will be available in `scripts/result.txt`.
+
