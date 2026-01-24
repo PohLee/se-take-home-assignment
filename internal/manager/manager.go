@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/feedme/order-controller/internal/bot"
+	"github.com/feedme/order-controller/internal/event"
 	"github.com/feedme/order-controller/internal/order"
 	"github.com/feedme/order-controller/internal/utils"
 )
@@ -16,6 +16,7 @@ import (
 type SystemManager struct {
 	OrderQueue  *order.Queue
 	BotPool     *bot.Pool
+	EventBus    *event.EventBus
 	cancelFuncs map[string]context.CancelFunc
 	mu          sync.Mutex
 	wg          sync.WaitGroup
@@ -23,9 +24,13 @@ type SystemManager struct {
 
 // NewSystemManager initializes and returns a new SystemManager with an empty queue and pool.
 func NewSystemManager() *SystemManager {
+	eb := event.NewEventBus()
+	order.Bus = eb // Link the order manager to the bus
+
 	return &SystemManager{
 		OrderQueue:  order.NewQueue(),
 		BotPool:     bot.NewPool(),
+		EventBus:    eb,
 		cancelFuncs: make(map[string]context.CancelFunc),
 	}
 }
@@ -70,30 +75,61 @@ func (m *SystemManager) RemoveBot(id string) {
 	utils.Log("Bot #%s removed from pool", b.ID)
 }
 
+// botLoop is the main worker loop for a bot. It waits for order availability
+// signals or context cancellation. It is event-reactive, eliminating the need
+// for periodic polling.
 func (m *SystemManager) botLoop(ctx context.Context, b *bot.Bot) {
 	defer m.wg.Done()
 
 	for {
+		// Check for cancellation BEFORE picking up work to avoid processing
+		// orders after the bot has been decommissioned.
 		select {
 		case <-ctx.Done():
 			return
 		default:
-			// Check for available orders
-			ord := m.OrderQueue.Pop()
-			if ord == nil {
-				// No orders, wait a bit and check again
-				time.Sleep(500 * time.Millisecond)
-				continue
-			}
-
-			// Process the order
-			completed := b.ProcessOrder(ctx, ord, nil)
-			if !completed {
-				// Order was cancelled, put it back to the front of the queue
-				ord.Status = order.OrderStatusPending
-				m.OrderQueue.PushFront(ord)
-			}
 		}
+
+		// First, try to pop any existing orders immediately.
+		ord := m.OrderQueue.Pop()
+		if ord != nil {
+			// Notify the system that an order has been assigned.
+			m.EventBus.Publish(event.Event{
+				Type: event.OrderAssigned,
+				Data: ord,
+			})
+			m.processAndEmit(ctx, b, ord)
+			continue
+		}
+
+		// No orders available, wait for notification from the queue or cancellation.
+		select {
+		case <-ctx.Done():
+			return
+		case <-m.OrderQueue.Notify:
+			// New order might be available, loop back to Pop.
+			continue
+		}
+	}
+}
+
+// processAndEmit handles the actual bot processing of an order and publishes
+// completion or cancellation events to the EventBus.
+func (m *SystemManager) processAndEmit(ctx context.Context, b *bot.Bot, ord *order.Order) {
+	completed := b.ProcessOrder(ctx, ord, nil)
+	if completed {
+		m.EventBus.Publish(event.Event{
+			Type: event.OrderCompleted,
+			Data: ord,
+		})
+	} else {
+		// Order was cancelled, put it back to the front of the queue
+		ord.Status = order.OrderStatusPending
+		m.OrderQueue.PushFront(ord)
+		m.EventBus.Publish(event.Event{
+			Type: event.OrderCancelled,
+			Data: ord,
+		})
 	}
 }
 

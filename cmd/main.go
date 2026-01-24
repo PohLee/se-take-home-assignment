@@ -21,7 +21,7 @@ func main() {
 	sm.AddOrder(order.OrderTypeNormal) // Order 3
 
 	// Initial Bots
-	bot1ID := sm.AddBot()
+	sm.AddBot()
 	sm.AddBot()
 
 	// Wait a bit for bots to pick up
@@ -36,7 +36,7 @@ func main() {
 
 	// Decrease Bot (should stop one processing order)
 	time.Sleep(3 * time.Second)
-	sm.RemoveBot(bot1ID)
+	sm.RemoveBot("")
 
 	time.Sleep(3 * time.Second)
 	sm.AddBot()
