@@ -16,7 +16,11 @@ func (pq PriorityQueue) Less(i, j int) bool {
 		return pq[i].Priority > pq[j].Priority
 	}
 	// For same priority, earlier CreatedAt comes first
-	return pq[i].CreatedAt.Before(pq[j].CreatedAt)
+	if !pq[i].CreatedAt.Equal(pq[j].CreatedAt) {
+		return pq[i].CreatedAt.Before(pq[j].CreatedAt)
+	}
+	// Tie breaker: use ID to ensure strict FIFO if timestamps are identical
+	return pq[i].ID < pq[j].ID
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
@@ -47,6 +51,7 @@ type Queue struct {
 	// Notify is used as an internal signaling mechanism to wake up bot workers
 	// immediately when an order is available, minimizing idle polling.
 	Notify chan struct{}
+	paused bool //  allows a manager to "freeze" bots from picking up orders
 }
 
 // NewQueue initializes and returns a new empty order priority Queue.
@@ -57,6 +62,19 @@ func NewQueue() *Queue {
 	}
 	heap.Init(&q.pq)
 	return q
+}
+
+func (q *Queue) SetPaused(paused bool) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	q.paused = paused
+	// If we just unpaused, signal bots to check the queue again
+	if !paused {
+		select {
+		case q.Notify <- struct{}{}:
+		default:
+		}
+	}
 }
 
 // Push adds a new order to the priority queue.
@@ -78,7 +96,7 @@ func (q *Queue) Push(order *Order) {
 func (q *Queue) Pop() *Order {
 	q.mu.Lock()
 	defer q.mu.Unlock()
-	if q.pq.Len() == 0 {
+	if q.paused || q.pq.Len() == 0 {
 		return nil
 	}
 	return heap.Pop(&q.pq).(*Order)

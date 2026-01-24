@@ -13,8 +13,8 @@ func TestPool(t *testing.T) {
 
 	// Test AddBot
 	b1 := p.AddBot()
-	if len(b1.ID) != 6 {
-		t.Errorf("Expected bot ID length 6, got %d", len(b1.ID))
+	if len(b1.ID) != 3 {
+		t.Errorf("Expected bot ID length 3, got %d", len(b1.ID))
 	}
 	if p.GetActiveBotsCount() != 1 {
 		t.Errorf("Expected 1 active bot, got %d", p.GetActiveBotsCount())

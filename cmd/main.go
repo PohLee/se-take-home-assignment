@@ -15,24 +15,19 @@ func main() {
 
 	sm := manager.NewSystemManager()
 
-	// Scenario: Add some orders
-	sm.AddOrder(order.OrderTypeNormal) // Order 1
-	sm.AddOrder(order.OrderTypeVIP)    // Order 2 (Should be processed before Order 1)
-	sm.AddOrder(order.OrderTypeNormal) // Order 3
-
-	// Initial Bots
-	sm.AddBot()
 	sm.AddBot()
 
-	// Wait a bit for bots to pick up
-	time.Sleep(2 * time.Second)
+	sm.AddOrder(order.OrderTypeNormal)
+	sm.AddOrder(order.OrderTypeNormal)
+	sm.AddOrder(order.OrderTypeVIP)
+	sm.AddOrder(order.OrderTypeNormal)
 
-	// Add more orders
-	sm.AddOrder(order.OrderTypeVIP)    // Order 4
-	sm.AddOrder(order.OrderTypeNormal) // Order 5
+	sm.AddBot()
 
-	// Increase Bots
-	sm.AddBot() // Total 3 bots
+	sm.AddOrder(order.OrderTypeVIP)
+	sm.AddOrder(order.OrderTypeNormal)
+
+	sm.AddBot()
 
 	// Decrease Bot (should stop one processing order)
 	time.Sleep(3 * time.Second)
@@ -41,10 +36,9 @@ func main() {
 	time.Sleep(3 * time.Second)
 	sm.AddBot()
 
-	// Let simulation run for a while to complete some orders
-	// 10s per order, with 2-3 bots it should take around 20-30s for 5 orders
-	time.Sleep(25 * time.Second)
+	time.Sleep(35 * time.Second)
 
 	utils.LogRaw(strings.Repeat(" ", 5))
+	utils.LogRaw(strings.Repeat("=", 50))
 	utils.LogRaw(sm.GetSummary())
 }

@@ -37,7 +37,9 @@ func NewSystemManager() *SystemManager {
 
 // AddOrder creates a new order of the specified type and adds it to the system queue.
 func (m *SystemManager) AddOrder(orderType order.OrderTypeEnum) {
+	m.OrderQueue.SetPaused(true)
 	order.AddOrder(m.OrderQueue, orderType)
+	m.OrderQueue.SetPaused(false)
 }
 
 // AddBot creates a new bot, adds it to the pool, and starts its processing loop.

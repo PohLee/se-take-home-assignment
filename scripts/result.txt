@@ -1,31 +1,35 @@
 McDonald's Order Controller - Starting Simulation
      
-[02:51:20] Order •1001 (Priority: 10 - Normal) Created - Status: PENDING
-[02:51:20] Order •1002 (Priority: 20 - VIP) Created - Status: PENDING
-[02:51:20] Order •1003 (Priority: 10 - Normal) Created - Status: PENDING
-[02:51:20] Bot #jeZhSW added into pool - Status: ACTIVE
-[02:51:20] Bot #nbYBQW added into pool - Status: ACTIVE
-[02:51:20] Bot #jeZhSW picked up Order •1002 - Status: PROCESSING
-[02:51:20] Bot #nbYBQW picked up Order •1001 - Status: PROCESSING
-[02:51:22] Order •1004 (Priority: 20 - VIP) Created - Status: PENDING
-[02:51:22] Order •1005 (Priority: 10 - Normal) Created - Status: PENDING
-[02:51:22] Bot #twb1ca added into pool - Status: ACTIVE
-[02:51:22] Bot #twb1ca picked up Order •1004 - Status: PROCESSING
-[02:51:25] Bot #jeZhSW cancelled Order •1002 - Status: CANCELLED
-[02:51:25] Bot #jeZhSW removed from pool
-[02:51:28] Bot #Wi3DPb added into pool - Status: ACTIVE
-[02:51:28] Bot #Wi3DPb picked up Order •1002 - Status: PROCESSING
-[02:51:30] Bot #nbYBQW completed Order •1001 - Status: COMPLETE (Processing time: 10s)
-[02:51:30] Bot #nbYBQW picked up Order •1003 - Status: PROCESSING
-[02:51:32] Bot #twb1ca completed Order •1004 - Status: COMPLETE (Processing time: 10s)
-[02:51:32] Bot #twb1ca picked up Order •1005 - Status: PROCESSING
-[02:51:38] Bot #Wi3DPb completed Order •1002 - Status: COMPLETE (Processing time: 10s)
-[02:51:40] Bot #nbYBQW completed Order •1003 - Status: COMPLETE (Processing time: 10s)
-[02:51:42] Bot #twb1ca completed Order •1005 - Status: COMPLETE (Processing time: 10s)
+[17:41:49.4862] Bot #139 added into pool - Status: ACTIVE
+[17:41:49.4985] Order •1001 (Priority: 10 - Normal) Created - Status: PENDING
+[17:41:49.4985] Order •1002 (Priority: 10 - Normal) Created - Status: PENDING
+[17:41:49.4985] Order •1003 (Priority: 20 - VIP) Created - Status: PENDING
+[17:41:49.4985] Order •1004 (Priority: 10 - Normal) Created - Status: PENDING
+[17:41:49.4985] Bot #542 added into pool - Status: ACTIVE
+[17:41:49.4985] Bot #139 picked up Order •1003 - Status: PROCESSING
+[17:41:49.4990] Bot #542 picked up Order •1001 - Status: PROCESSING
+[17:41:49.4990] Order •1005 (Priority: 20 - VIP) Created - Status: PENDING
+[17:41:49.4990] Order •1006 (Priority: 10 - Normal) Created - Status: PENDING
+[17:41:49.4990] Bot #466 added into pool - Status: ACTIVE
+[17:41:49.4990] Bot #466 picked up Order •1005 - Status: PROCESSING
+[17:41:52.4996] Bot #466 removed from pool
+[17:41:52.4996] Bot #466 cancelled Order •1005 - Status: CANCELLED
+[17:41:55.5011] Bot #319 added into pool - Status: ACTIVE
+[17:41:55.5014] Bot #319 picked up Order •1005 - Status: PROCESSING
+[17:41:59.4996] Bot #542 completed Order •1001 - Status: COMPLETE (Processing time: 10s)
+[17:41:59.4996] Bot #139 completed Order •1003 - Status: COMPLETE (Processing time: 10s)
+[17:41:59.5002] Bot #139 picked up Order •1004 - Status: PROCESSING
+[17:41:59.4996] Bot #542 picked up Order •1002 - Status: PROCESSING
+[17:42:05.5025] Bot #319 completed Order •1005 - Status: COMPLETE (Processing time: 10s)
+[17:42:05.5025] Bot #319 picked up Order •1006 - Status: PROCESSING
+[17:42:09.5005] Bot #542 completed Order •1002 - Status: COMPLETE (Processing time: 10s)
+[17:42:09.5005] Bot #139 completed Order •1004 - Status: COMPLETE (Processing time: 10s)
+[17:42:15.5029] Bot #319 completed Order •1006 - Status: COMPLETE (Processing time: 10s)
      
+==================================================
 
 Final Status:
-- Total Orders Processed: 5 (2 VIP, 3 Normal)
-- Orders Completed: 5
+- Total Orders Processed: 6 (2 VIP, 4 Normal)
+- Orders Completed: 6
 - Active Bots: 3
 - Pending Orders: 0

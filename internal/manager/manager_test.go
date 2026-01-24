@@ -12,8 +12,8 @@ func TestSystemManager(t *testing.T) {
 
 	// Test AddBot
 	botID := m.AddBot()
-	if len(botID) != 6 {
-		t.Errorf("Expected bot ID length 6, got %d", len(botID))
+	if len(botID) != 3 {
+		t.Errorf("Expected bot ID length 3, got %d", len(botID))
 	}
 
 	// Test AddOrder

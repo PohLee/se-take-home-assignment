@@ -26,7 +26,7 @@ func (p *Pool) AddBot() *Bot {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	newID := utils.GenerateRandomID(6)
+	newID := utils.GenerateRandomID(3)
 	newBot := &Bot{
 		ID:     newID,
 		Status: BotStatusIdle,

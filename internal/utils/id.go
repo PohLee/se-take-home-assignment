@@ -9,7 +9,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+var letters = []rune("123456789")
 
 // GenerateRandomID returns a random string of the specified length.
 func GenerateRandomID(n int) string {
