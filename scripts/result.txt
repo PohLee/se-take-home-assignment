@@ -1,30 +1,78 @@
 McDonald's Order Controller - Starting Simulation
      
-[17:41:49.4862] Bot #139 added into pool - Status: ACTIVE
-[17:41:49.4985] Order •1001 (Priority: 10 - Normal) Created - Status: PENDING
-[17:41:49.4985] Order •1002 (Priority: 10 - Normal) Created - Status: PENDING
-[17:41:49.4985] Order •1003 (Priority: 20 - VIP) Created - Status: PENDING
-[17:41:49.4985] Order •1004 (Priority: 10 - Normal) Created - Status: PENDING
-[17:41:49.4985] Bot #542 added into pool - Status: ACTIVE
-[17:41:49.4985] Bot #139 picked up Order •1003 - Status: PROCESSING
-[17:41:49.4990] Bot #542 picked up Order •1001 - Status: PROCESSING
-[17:41:49.4990] Order •1005 (Priority: 20 - VIP) Created - Status: PENDING
-[17:41:49.4990] Order •1006 (Priority: 10 - Normal) Created - Status: PENDING
-[17:41:49.4990] Bot #466 added into pool - Status: ACTIVE
-[17:41:49.4990] Bot #466 picked up Order •1005 - Status: PROCESSING
-[17:41:52.4996] Bot #466 removed from pool
-[17:41:52.4996] Bot #466 cancelled Order •1005 - Status: CANCELLED
-[17:41:55.5011] Bot #319 added into pool - Status: ACTIVE
-[17:41:55.5014] Bot #319 picked up Order •1005 - Status: PROCESSING
-[17:41:59.4996] Bot #542 completed Order •1001 - Status: COMPLETE (Processing time: 10s)
-[17:41:59.4996] Bot #139 completed Order •1003 - Status: COMPLETE (Processing time: 10s)
-[17:41:59.5002] Bot #139 picked up Order •1004 - Status: PROCESSING
-[17:41:59.4996] Bot #542 picked up Order •1002 - Status: PROCESSING
-[17:42:05.5025] Bot #319 completed Order •1005 - Status: COMPLETE (Processing time: 10s)
-[17:42:05.5025] Bot #319 picked up Order •1006 - Status: PROCESSING
-[17:42:09.5005] Bot #542 completed Order •1002 - Status: COMPLETE (Processing time: 10s)
-[17:42:09.5005] Bot #139 completed Order •1004 - Status: COMPLETE (Processing time: 10s)
-[17:42:15.5029] Bot #319 completed Order •1006 - Status: COMPLETE (Processing time: 10s)
+[23:37:20.3761] Bot #692 added into pool - Status: ACTIVE (Type: FAST)
+[23:37:20.4041] Order •1001 (Priority: 10 - Normal) Created - Status: PENDING
+[23:37:20.4041] Order •1002 (Priority: 10 - Normal) Created - Status: PENDING
+[23:37:20.4046] Order •1003 (Priority: 20 - VIP) Created - Status: PENDING
+[23:37:20.4046] Order •1004 (Priority: 10 - Normal) Created - Status: PENDING
+[23:37:20.4046] Bot #983 added into pool - Status: ACTIVE (Type: SLOW)
+[23:37:20.4046] Bot #692 picked up Order •1003 - Status: PROCESSING
+[23:37:20.4046] Order •1005 (Priority: 20 - VIP) Created - Status: PENDING
+[23:37:20.4046] Order •1006 (Priority: 10 - Normal) Created - Status: PENDING
+[23:37:20.4046] Bot #689 added into pool - Status: ACTIVE (Type: FAST)
+[23:37:20.4046] Bot #983 picked up Order •1005 - Status: PROCESSING
+[23:37:20.4046] Bot #689 picked up Order •1001 - Status: PROCESSING
+[23:37:21.3766] Order •1003 processing by Bot #692 (FAST). Time Remaining: 4.03s
+[23:37:21.3766] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 9.03s
+[23:37:21.3766] Order •1001 processing by Bot #689 (FAST). Time Remaining: 4.03s
+[23:37:22.3763] Order •1003 processing by Bot #692 (FAST). Time Remaining: 3.03s
+[23:37:22.3763] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 8.03s
+[23:37:22.3763] Order •1001 processing by Bot #689 (FAST). Time Remaining: 3.03s
+[23:37:23.3765] Order •1003 processing by Bot #692 (FAST). Time Remaining: 2.03s
+[23:37:23.3765] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 7.03s
+[23:37:23.3765] Order •1001 processing by Bot #689 (FAST). Time Remaining: 2.03s
+[23:37:23.4050] Bot #689 removed from pool
+[23:37:23.4050] Bot #689 cancelled Order •1001 - Status: CANCELLED
+[23:37:24.3765] Order •1003 processing by Bot #692 (FAST). Time Remaining: 1.03s
+[23:37:24.3765] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 6.03s
+[23:37:25.3769] Order •1003 processing by Bot #692 (FAST). Time Remaining: 0.03s
+[23:37:25.3769] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 5.03s
+[23:37:25.4049] Bot #692 completed Order •1003 - Status: COMPLETE (Processing time: 5s)
+[23:37:25.4049] Bot #692 picked up Order •1001 - Status: PROCESSING
+[23:37:26.3763] Order •1001 processing by Bot #692 (FAST). Time Remaining: 4.03s
+[23:37:26.3763] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 4.03s
+[23:37:26.4056] Bot #986 added into pool - Status: ACTIVE (Type: SLOW)
+[23:37:26.4056] Bot #986 picked up Order •1002 - Status: PROCESSING
+[23:37:27.3763] Order •1001 processing by Bot #692 (FAST). Time Remaining: 3.03s
+[23:37:27.3763] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 3.03s
+[23:37:27.3763] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 9.03s
+[23:37:28.3762] Order •1001 processing by Bot #692 (FAST). Time Remaining: 2.03s
+[23:37:28.3762] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 2.03s
+[23:37:28.3762] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 8.03s
+[23:37:29.3762] Order •1001 processing by Bot #692 (FAST). Time Remaining: 1.03s
+[23:37:29.3762] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 1.03s
+[23:37:29.3762] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 7.03s
+[23:37:30.3763] Order •1001 processing by Bot #692 (FAST). Time Remaining: 0.03s
+[23:37:30.3763] Order •1005 processing by Bot #983 (SLOW). Time Remaining: 0.03s
+[23:37:30.3763] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 6.03s
+[23:37:30.4051] Bot #692 completed Order •1001 - Status: COMPLETE (Processing time: 5s)
+[23:37:30.4051] Bot #983 completed Order •1005 - Status: COMPLETE (Processing time: 10s)
+[23:37:30.4051] Bot #692 picked up Order •1004 - Status: PROCESSING
+[23:37:30.4051] Bot #983 picked up Order •1006 - Status: PROCESSING
+[23:37:31.3762] Order •1004 processing by Bot #692 (FAST). Time Remaining: 4.03s
+[23:37:31.3762] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 9.03s
+[23:37:31.3762] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 5.03s
+[23:37:32.3764] Order •1004 processing by Bot #692 (FAST). Time Remaining: 3.03s
+[23:37:32.3764] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 8.03s
+[23:37:32.3764] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 4.03s
+[23:37:33.3766] Order •1004 processing by Bot #692 (FAST). Time Remaining: 2.03s
+[23:37:33.3766] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 7.03s
+[23:37:33.3766] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 3.03s
+[23:37:34.3763] Order •1004 processing by Bot #692 (FAST). Time Remaining: 1.03s
+[23:37:34.3763] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 6.03s
+[23:37:34.3763] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 2.03s
+[23:37:35.3765] Order •1004 processing by Bot #692 (FAST). Time Remaining: 0.03s
+[23:37:35.3765] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 5.03s
+[23:37:35.3765] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 1.03s
+[23:37:35.4054] Bot #692 completed Order •1004 - Status: COMPLETE (Processing time: 5s)
+[23:37:36.3762] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 4.03s
+[23:37:36.3762] Order •1002 processing by Bot #986 (SLOW). Time Remaining: 0.03s
+[23:37:36.4059] Bot #986 completed Order •1002 - Status: COMPLETE (Processing time: 10s)
+[23:37:37.3762] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 3.03s
+[23:37:38.3767] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 2.03s
+[23:37:39.3765] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 1.03s
+[23:37:40.3766] Order •1006 processing by Bot #983 (SLOW). Time Remaining: 0.03s
+[23:37:40.4056] Bot #983 completed Order •1006 - Status: COMPLETE (Processing time: 10s)
      
 ==================================================
 

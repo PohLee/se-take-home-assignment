@@ -22,7 +22,7 @@ func NewPool() *Pool {
 
 // AddBot creates a new bot with a random 6-character ID, initializes its status
 // to Idle, and returns the newly created Bot.
-func (p *Pool) AddBot() *Bot {
+func (p *Pool) AddBot(botType BotTypeEnum) *Bot {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -30,6 +30,7 @@ func (p *Pool) AddBot() *Bot {
 	newBot := &Bot{
 		ID:     newID,
 		Status: BotStatusIdle,
+		Type:   botType,
 	}
 	p.bots = append(p.bots, newBot)
 	return newBot
@@ -88,4 +89,13 @@ func (p *Pool) GetActiveBotsCount() int {
 		}
 	}
 	return count
+}
+
+// ForEach executes a function for every bot in the pool (thread-safe).
+func (p *Pool) ForEach(fn func(*Bot)) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	for _, b := range p.bots {
+		fn(b)
+	}
 }

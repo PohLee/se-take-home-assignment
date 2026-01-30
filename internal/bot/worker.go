@@ -21,15 +21,22 @@ func (b *Bot) ProcessOrder(ctx context.Context, ord *order.Order, onComplete fun
 
 	utils.Log("Bot #%s picked up Order •%d - Status: PROCESSING", b.ID, ord.ID)
 
-	// Simulate 10 seconds of processing
+	// Determine processing duration from model map
+	duration, ok := ProcessingTimeMap[b.Type]
+	if !ok {
+		// Fallback to default if type not found (should not happen with proper initialization)
+		duration = 10 * time.Second
+	}
+
+	// Simulate processing
 	select {
-	case <-time.After(10 * time.Second):
+	case <-time.After(duration):
 		ord.Status = order.OrderStatusComplete
 		doneAt := time.Now()
 		ord.CompletedAt = &doneAt
 		b.Status = BotStatusIdle
 		b.CurrentOrderID = nil
-		utils.Log("Bot #%s completed Order •%d - Status: COMPLETE (Processing time: 10s)", b.ID, ord.ID)
+		utils.Log("Bot #%s completed Order •%d - Status: COMPLETE (Processing time: %v)", b.ID, ord.ID, duration)
 		if onComplete != nil {
 			onComplete(ord)
 		}

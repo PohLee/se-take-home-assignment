@@ -12,7 +12,7 @@ func TestPool(t *testing.T) {
 	p := NewPool()
 
 	// Test AddBot
-	b1 := p.AddBot()
+	b1 := p.AddBot(BotTypeFast)
 	if len(b1.ID) != 3 {
 		t.Errorf("Expected bot ID length 3, got %d", len(b1.ID))
 	}
@@ -20,7 +20,7 @@ func TestPool(t *testing.T) {
 		t.Errorf("Expected 1 active bot, got %d", p.GetActiveBotsCount())
 	}
 
-	b2 := p.AddBot()
+	b2 := p.AddBot(BotTypeSlow)
 	if b2.ID == "" {
 		t.Error("Expected b2 ID to not be empty")
 	}

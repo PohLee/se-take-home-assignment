@@ -83,3 +83,15 @@ func GetCompletedCount() int {
 	}
 	return count
 }
+
+// GetOrder retrieves an order by its ID.
+func GetOrder(id int) *Order {
+	idMu.Lock()
+	defer idMu.Unlock()
+	for _, o := range allOrders {
+		if o.ID == id {
+			return o
+		}
+	}
+	return nil
+}

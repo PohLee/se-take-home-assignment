@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/feedme/order-controller/internal/bot"
 	"github.com/feedme/order-controller/internal/event"
@@ -27,12 +28,23 @@ func NewSystemManager() *SystemManager {
 	eb := event.NewEventBus()
 	order.Bus = eb // Link the order manager to the bus
 
-	return &SystemManager{
+	m := &SystemManager{
 		OrderQueue:  order.NewQueue(),
 		BotPool:     bot.NewPool(),
 		EventBus:    eb,
 		cancelFuncs: make(map[string]context.CancelFunc),
 	}
+
+	// Start background logging
+	go func() {
+		ticker := time.NewTicker(1 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			m.LogProcessingStatus()
+		}
+	}()
+
+	return m
 }
 
 // AddOrder creates a new order of the specified type and adds it to the system queue.
@@ -44,9 +56,9 @@ func (m *SystemManager) AddOrder(orderType order.OrderTypeEnum) {
 
 // AddBot creates a new bot, adds it to the pool, and starts its processing loop.
 // Returns the ID of the newly created bot.
-func (m *SystemManager) AddBot() string {
-	b := m.BotPool.AddBot()
-	utils.Log("Bot #%s added into pool - Status: ACTIVE", b.ID)
+func (m *SystemManager) AddBot(botType bot.BotTypeEnum) string {
+	b := m.BotPool.AddBot(botType)
+	utils.Log("Bot #%s added into pool - Status: ACTIVE (Type: %s)", b.ID, b.Type)
 
 	// Start the bot worker loop
 	ctx, cancel := context.WithCancel(context.Background())
@@ -151,4 +163,35 @@ func (m *SystemManager) GetSummary() string {
 
 	return fmt.Sprintf("\nFinal Status:\n- Total Orders Processed: %d (%d VIP, %d Normal)\n- Orders Completed: %d\n- Active Bots: %d\n- Pending Orders: %d",
 		total, vip, normal, completed, activeBots, pending)
+}
+
+// LogProcessingStatus iterates over all active bots and logs the status of orders currently being processed,
+// including the calculated time remaining.
+func (m *SystemManager) LogProcessingStatus() {
+	m.BotPool.ForEach(func(b *bot.Bot) {
+		// Only check bots that are currently processing an order
+		if b.Status == bot.BotStatusProcessing && b.CurrentOrderID != nil {
+			// Retrieve the full order struct
+			ord := order.GetOrder(*b.CurrentOrderID)
+
+			// Safety check: verify order exists and has a start time
+			if ord != nil && ord.ProcessedAt != nil {
+				// 1. Determine Total Duration based on Bot Type
+				totalDuration := bot.ProcessingTimeMap[b.Type]
+
+				// 2. Calculate Elapsed Time
+				elapsed := time.Since(*ord.ProcessedAt)
+
+				// 3. Calculate Remaining Time
+				remaining := totalDuration.Seconds() - elapsed.Seconds()
+				if remaining < 0 {
+					remaining = 0
+				}
+
+				// 4. Log
+				utils.Log("Order •%d processing by Bot #%s (%s). Time Remaining: %.2fs",
+					ord.ID, b.ID, b.Type, remaining)
+			}
+		}
+	})
 }
