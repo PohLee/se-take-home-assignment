@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/feedme/order-controller/internal/bot"
 	"github.com/feedme/order-controller/internal/order"
 )
 
@@ -11,7 +12,7 @@ func TestSystemManager(t *testing.T) {
 	m := NewSystemManager()
 
 	// Test AddBot
-	botID := m.AddBot()
+	botID := m.AddBot(bot.BotTypeFast)
 	if len(botID) != 3 {
 		t.Errorf("Expected bot ID length 3, got %d", len(botID))
 	}
