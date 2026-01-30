@@ -168,9 +168,9 @@ func (m *SystemManager) GetSummary() string {
 // LogProcessingStatus iterates over all active bots and logs the status of orders currently being processed,
 // including the calculated time remaining.
 func (m *SystemManager) LogProcessingStatus() {
-	m.BotPool.ForEach(func(b *bot.Bot) {
-		// Only check bots that are currently processing an order
-		if b.Status == bot.BotStatusProcessing && b.CurrentOrderID != nil {
+	m.BotPool.ForEach(bot.BotStatusProcessing, func(b *bot.Bot) {
+		// Only check bots that have a current order ID
+		if b.CurrentOrderID != nil {
 			// Retrieve the full order struct
 			ord := order.GetOrder(*b.CurrentOrderID)
 

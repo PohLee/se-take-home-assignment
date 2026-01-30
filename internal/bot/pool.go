@@ -92,10 +92,13 @@ func (p *Pool) GetActiveBotsCount() int {
 }
 
 // ForEach executes a function for every bot in the pool (thread-safe).
-func (p *Pool) ForEach(fn func(*Bot)) {
+// If status is provided, it only iterates over bots with that status.
+func (p *Pool) ForEach(status BotStatusEnum, fn func(*Bot)) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	for _, b := range p.bots {
-		fn(b)
+		if status == "" || b.Status == status {
+			fn(b)
+		}
 	}
 }
